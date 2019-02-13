@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
 
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
 
 class ArticleController extends AbstractController
 {
