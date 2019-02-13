@@ -1,4 +1,6 @@
 {
+    "name": "ybernier/api_mobile",
+    "description": "OC7 Project BileMo API",
     "type": "project",
     "license": "proprietary",
     "require": {

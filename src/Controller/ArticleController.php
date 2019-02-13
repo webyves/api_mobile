@@ -27,7 +27,7 @@ class ArticleController extends AbstractController
     }
 
     /**
-     * @Route("/article/{id}", name="show_article")
+     * @Route("/article/{id}", name="show_article", requirements={"id"="\d+"})
      */
     public function showArticle(Article $article, SerializerInterface $seri)
     {
