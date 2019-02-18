@@ -44,7 +44,7 @@ class ClientController extends AbstractController
     /**
      * @Route("/fb-callback", name="login_client_fb-callback")
      */
-    public function indexFbCallback(EntityManagerInterface $manager, ClientRepository $clientRepo)
+    public function fbCallback(EntityManagerInterface $manager, ClientRepository $clientRepo)
     {
 		if (!session_id()) {
 		    session_start();
@@ -117,13 +117,21 @@ class ClientController extends AbstractController
 		  // var_dump($accessToken->getValue());
 		}
 
-		$_SESSION['fb_access_token'] = (string) $accessToken;
+		// $_SESSION['fb_access_token'] = (string) $accessToken;
 		// User is logged in with a long-lived access token.
 		// You can redirect them to a members-only page.
 		//header('Location: https://example.com/members.php');
 
+		// $client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
+		$fbid_override="123456";
+		$client = $clientRepo->findOneBy(['fbId'=>$fbid_override]);
 
-		$client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
+		if (empty($client)) {
+	        return $this->render('client/askForAccount.html.twig', [
+	            'fbUser' => $user,
+	            'captchaSiteKey' =>  $this->getParameter('captcha.sitekey'),
+	        ]);
+		}
 		$client->setFbToken($accessToken->getValue());
 		$manager->persist($client);
 		$manager->flush();
@@ -137,7 +145,15 @@ class ClientController extends AbstractController
 
     }
 
-
+    /**
+     * @Route("/ask-for-account", name="ask_for_account")
+     */
+    public function askForAccount()
+    {
+    	// SEND EMAIL WITH INFOS
+    	$this->addflash('success','Votre demande de création de compte a bien été envoyée !');
+		return $this->redirectToRoute('login_client');
+    }    
 
 
     /**

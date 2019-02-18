@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Congrats Client !{% endblock %}
+
+{% block body %}
+<div class="row">
+    <h1>Ask for your account !</h1>
+</div>
+<div class="row">
+    <div class="col">
+        <h4>formulaire de contact</h4>
+		<form action="{{ path('ask_for_account') }}" method="post">
+		    <div class="form-group">
+		        <label for="contactContactName">Nom du responsable :</label>
+		        <input type="text" class="form-control" name="contactContactName" id="contactContactName" placeholder="Saisissez votre Nom" value="{{ fbUser.name }}">
+		        <input type="hidden" class="form-control" name="contactFbId" id="contactFbId" value="{{ fbUser.id }}">
+		    </div>
+		    <div class="form-group">
+		        <label for="contactEmail">Adresse eMail :</label>
+		        <input type="email" class="form-control" name="contactEmail" id="contactEmail" placeholder="Saisissez votre eMail">
+		    </div>
+		    <div class="form-group">
+		        <label for="contactUsername">Nom Entreprise :</label>
+		        <input type="text" class="form-control" name="contactUsername" id="contactUsername" placeholder="Saisissez votre Entreprise">
+		    </div>
+		    <div class="form-group">
+		        <label for="contactAddress">Adresse Entreprise :</label>
+		        <textarea class="form-control" name="contactAddress" id="contactAddress" placeholder="Saisissez votre Adresse"></textarea>
+		    </div>
+		    <div class="form-group">
+		        <div class="g-recaptcha" data-sitekey="{{ captchaSiteKey }}"></div>
+		    </div>
+			<button type="submit" class="btn btn-success">Envoyer</button>
+		</form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
