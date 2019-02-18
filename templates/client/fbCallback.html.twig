@@ -7,16 +7,23 @@
     <h1>Congrats you are logged on !</h1>
 </div>
 <div class="">
+	<label for="validationTooltipUsername">OAuth Token</label>
+	<div class="input-group mb-3">
+		<input class="form-control" type="text" id="inputFbToken" value="{{ fbToken }}" readonly>
+		<div class="input-group-append">
+			<button class="btn btn-outline-info" type="button" id="button-copy-token">Copier</button>
+		</div>
+	</div>
+
 	<ul>
-		<li>FB Token : {{ fbToken }}</li>
 		<li>FB Id : {{ fbUser.id }}</li>
 		<li>FB Name : {{ fbUser.name }}</li>
 	</ul>
 	<ul>
-		<li>Client Contact :{{ client.contactName }}</li>
-		<li>Client email:{{ client.email }}</li>
+		<li>Client Contact : {{ client.contactName }}</li>
+		<li>Client email : {{ client.email }}</li>
 		<li>Client Name : {{ client.username }}</li>
-		<li>Client addresse:{{ client.address }}</li>
+		<li>Client addresse : {{ client.address }}</li>
 	</ul>
 </div>
 {% endblock %}
