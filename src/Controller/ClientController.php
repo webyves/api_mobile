@@ -13,6 +13,7 @@ use Facebook\FacebookResponse;
 use App\Entity\Client;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\BileMoEmails;
 
 class ClientController extends AbstractController
 {
@@ -148,9 +149,13 @@ class ClientController extends AbstractController
     /**
      * @Route("/ask-for-account", name="ask_for_account")
      */
-    public function askForAccount()
+    public function askForAccount(Request $request, BileMoEmails $emailService)
     {
+    	// VERIFIER LE CAPTCHA
+    	// VERIFIER INFOS
     	// SEND EMAIL WITH INFOS
+		$emailService->emailAskForAccount($request, $this->getParameter('admin.email'));
+
     	$this->addflash('success','Votre demande de création de compte a bien été envoyée !');
 		return $this->redirectToRoute('login_client');
     }    
