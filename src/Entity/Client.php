@@ -26,7 +26,12 @@ class Client
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $password;
+    private $fbId;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $fbToken;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -70,14 +75,26 @@ class Client
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getFbId(): ?string
     {
-        return $this->password;
+        return $this->fbId;
     }
 
-    public function setPassword(string $password): self
+    public function setFbId(string $fbId): self
     {
-        $this->password = $password;
+        $this->fbId = $fbId;
+
+        return $this;
+    }
+
+    public function getFbToken(): ?string
+    {
+        return $this->fbToken;
+    }
+
+    public function setFbToken(string $fbToken): self
+    {
+        $this->fbToken = $fbToken;
 
         return $this;
     }

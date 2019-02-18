@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Congrats Client !{% endblock %}
+
+{% block body %}
+<div class="">
+    <h1>Congrats you are logged on !</h1>
+</div>
+<div class="">
+	<ul>
+		<li>FB Token : {{ fbToken }}</li>
+		<li>FB Id : {{ fbUser.id }}</li>
+		<li>FB Name : {{ fbUser.name }}</li>
+	</ul>
+	<ul>
+		<li>Client Contact :{{ client.contactName }}</li>
+		<li>Client email:{{ client.email }}</li>
+		<li>Client Name : {{ client.username }}</li>
+		<li>Client addresse:{{ client.address }}</li>
+	</ul>
+</div>
+{% endblock %}

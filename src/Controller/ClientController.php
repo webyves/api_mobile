@@ -4,16 +4,22 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
+use Facebook\FacebookResponse;
+use App\Entity\Client;
+use App\Repository\ClientRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ClientController extends AbstractController
 {
     /**
      * @Route("/", name="login_client")
      */
-    public function index()
+    public function index(Request $request)
     {
 		if (!session_id()) {
 		    session_start();
@@ -28,20 +34,17 @@ class ClientController extends AbstractController
 		$helper = $fb->getRedirectLoginHelper();
 
 		$permissions = ['email']; // Optional permissions
-		$loginUrl = htmlspecialchars($helper->getLoginUrl('https://bilemo.ybernier.fr/fb-callback', $permissions));
+		$loginUrl = htmlspecialchars($helper->getLoginUrl('https://' . $request->server->get('HTTP_HOST') . '/fb-callback', $permissions));
 
         return $this->render('client/index.html.twig', [
-            'message' => '',
             'loginUrl' => $loginUrl,
-            'tokenValue' => '',
-            'metaData' => '',
         ]);
     }
 
     /**
      * @Route("/fb-callback", name="login_client_fb-callback")
      */
-    public function indexFbCallback()
+    public function indexFbCallback(EntityManagerInterface $manager, ClientRepository $clientRepo)
     {
 		if (!session_id()) {
 		    session_start();
@@ -50,13 +53,15 @@ class ClientController extends AbstractController
 		$fb = new Facebook([
 		  'app_id' => $this->getParameter('fb.app.id'), 
 		  'app_secret' => $this->getParameter('fb.app.secret'),
-		  'default_graph_version' => 'v2.2',
+		  'default_graph_version' => 'v3.2',
 		  ]);
 
 		$helper = $fb->getRedirectLoginHelper();
 
 		try {
 		  $accessToken = $helper->getAccessToken();
+		  $response = $fb->get('/me?fields=id,name', $accessToken->getValue());
+		  $user = $response->getGraphUser();
 		} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		  // When Graph returns an error
 		  echo 'Graph returned an error: ' . $e->getMessage();
@@ -94,7 +99,7 @@ class ClientController extends AbstractController
 		// var_dump($tokenMetadata);
 
 		// Validation (these will throw FacebookSDKException's when they fail)
-		$tokenMetadata->validateAppId('2042772335837722'); // Replace {app-id} with your app id
+		$tokenMetadata->validateAppId($this->getParameter('fb.app.id')); // Replace {app-id} with your app id
 		// If you know the user ID this access token belongs to, you can validate it here
 		//$tokenMetadata->validateUserId('123');
 		$tokenMetadata->validateExpiration();
@@ -113,15 +118,21 @@ class ClientController extends AbstractController
 		}
 
 		$_SESSION['fb_access_token'] = (string) $accessToken;
-
 		// User is logged in with a long-lived access token.
 		// You can redirect them to a members-only page.
 		//header('Location: https://example.com/members.php');
-        return $this->render('client/index.html.twig', [
-            'message' => '',
-            'loginUrl' => '',
-            'tokenValue' => $accessToken,
-            'metaData' => '',
+
+
+		$client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
+		$client->setFbToken($accessToken->getValue());
+		$manager->persist($client);
+		$manager->flush();
+
+
+        return $this->render('client/fbCallback.html.twig', [
+            'fbToken' => $accessToken->getValue(),
+            'fbUser' => $user,
+            'client' => $client,
         ]);
 
     }
