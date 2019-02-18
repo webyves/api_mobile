@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
 
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
 
 class ArticleController extends AbstractController
 {
@@ -27,7 +27,7 @@ class ArticleController extends AbstractController
     }
 
     /**
-     * @Route("/article/{id}", name="show_article")
+     * @Route("/article/{id}", name="show_article", requirements={"id"="\d+"})
      */
     public function showArticle(Article $article, SerializerInterface $seri)
     {
