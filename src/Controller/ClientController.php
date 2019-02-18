@@ -122,9 +122,9 @@ class ClientController extends AbstractController
 		// You can redirect them to a members-only page.
 		//header('Location: https://example.com/members.php');
 
-		// $client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
-		$fbid_override="123456";
-		$client = $clientRepo->findOneBy(['fbId'=>$fbid_override]);
+		$client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
+		// $fbid_override="123456";
+		// $client = $clientRepo->findOneBy(['fbId'=>$fbid_override]);
 
 		if (empty($client)) {
 	        return $this->render('client/askForAccount.html.twig', [
