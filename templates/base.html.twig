@@ -16,6 +16,19 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #e3f2fd;">
             <a class="navbar-brand" href="{{ path('login_client') }}">BileMo</a>
+            <div class="">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('contact') }}" title="Contact"><em class="fas fa-envelope-open"></em></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('mentions') }}" title="Mentions Legales"><em class="fas fa-balance-scale"></em></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('politique') }}" title="Politique de confidientialité"><em class="fas fa-mask"></em></a>
+                    </li>
+                </ul>
+            </div>
         </nav>
         <div class="container">
 			<div class="row">

@@ -14,6 +14,7 @@ use App\Entity\Client;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\BileMoEmails;
+use App\Service\ReCpatchaV2;
 
 class ClientController extends AbstractController
 {
@@ -152,12 +153,15 @@ class ClientController extends AbstractController
     public function askForAccount(Request $request, BileMoEmails $emailService)
     {
     	// VERIFIER LE CAPTCHA
-    	// VERIFIER INFOS
-    	// SEND EMAIL WITH INFOS
-		$emailService->emailAskForAccount($request, $this->getParameter('admin.email'));
-
-    	$this->addflash('success','Votre demande de création de compte a bien été envoyée !');
-		return $this->redirectToRoute('login_client');
+        if(ReCpatchaV2::checkValue($request, $this->getParameter('captcha.secretkey'))) {
+	    	// VERIFIER INFOS
+	    	// SEND EMAIL WITH INFOS
+			$emailService->emailAskForAccount($request, $this->getParameter('admin.email'));
+	    	$this->addflash('success','Votre demande de création de compte a bien été envoyée !');
+			return $this->redirectToRoute('login_client');
+		}
+        $this->addFlash('danger', 'Il y a une erreur avec le captcha !');
+        return $this->redirectToRoute('login_client');
     }    
 
 
