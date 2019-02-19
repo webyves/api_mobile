@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\ClientRepository;
 
 use JMS\Serializer\SerializerInterface;
 
@@ -15,14 +18,28 @@ class ArticleController extends AbstractController
     /**
      * @Route("/articles", name="list_articles")
      */
-    public function listArticles(ArticleRepository $repo, SerializerInterface $seri)
+    public function listArticles(ArticleRepository $repo, SerializerInterface $seri, Request $request, ClientRepository $clientRepo)
     {
-    	$articles = $repo->findAll();
-        $data = $seri->serialize($articles, 'json');
+        $authorization = $request->headers->get('authorization');
+        if ($authorization) {
+            $token = explode("Bearer ", $authorization);
+            $client = $clientRepo->findOneBy(["fbToken" => $token[1]]);
+            if($client) {
+                $articles = $repo->findAll();
+                $data = $seri->serialize($articles, 'json');
 
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
+                return JsonResponse::fromJsonString($data);
+            }
+            $response = new Response();
+            $response->setContent('ERREUR UTILISATEUR NON TROUVE');
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            return $response;
+        }
+        $response = new Response();
+        $response->setContent('ERREUR AUTHORIZATION');
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
         return $response;
     }
 
@@ -33,9 +50,6 @@ class ArticleController extends AbstractController
     {
         $data = $seri->serialize($article, 'json');
 
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return JsonResponse::fromJsonString($data);
     }
 }
