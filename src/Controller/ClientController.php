@@ -163,15 +163,4 @@ class ClientController extends AbstractController
         $this->addFlash('danger', 'Il y a une erreur avec le captcha !');
         return $this->redirectToRoute('login_client');
     }    
-
-
-    /**
-     * @Route("/client", name="showclient")
-     */
-    public function showClient()
-    {
-        return $this->render('client/index.html.twig', [
-            'controller_name' => 'ClientController',
-        ]);
-    }    
 }

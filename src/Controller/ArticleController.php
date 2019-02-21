@@ -12,6 +12,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\ClientRepository;
 
 use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 
 class ArticleController extends AbstractController
 {
@@ -25,9 +26,9 @@ class ArticleController extends AbstractController
             $token = explode("Bearer ", $authorization);
             $client = $clientRepo->findOneBy(["fbToken" => $token[1]]);
             if($client) {
+                // BASIC CODE SERIALIZATION
                 $articles = $repo->findAll();
-                $data = $seri->serialize($articles, 'json');
-
+                $data = $seri->serialize($articles, 'json', SerializationContext::create()->setGroups(array('list')));
                 return JsonResponse::fromJsonString($data);
             }
             $response = new Response();
@@ -48,7 +49,7 @@ class ArticleController extends AbstractController
      */
     public function showArticle(Article $article, SerializerInterface $seri)
     {
-        $data = $seri->serialize($article, 'json');
+        $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail')));
 
         return JsonResponse::fromJsonString($data);
     }
