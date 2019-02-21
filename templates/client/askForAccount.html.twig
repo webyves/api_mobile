@@ -11,21 +11,21 @@
         <h4>formulaire de contact</h4>
 		<form action="{{ path('ask_for_account') }}" method="post">
 		    <div class="form-group">
-		        <label for="contactContactName">Nom du responsable :</label>
-		        <input type="text" class="form-control" name="contactContactName" id="contactContactName" placeholder="Saisissez votre Nom" value="{{ fbUser.name }}">
-		        <input type="hidden" class="form-control" name="contactFbId" id="contactFbId" value="{{ fbUser.id }}">
+		        <label for="contactContactName">Nom du responsable : <span class="text-danger"><em class="fas fa-asterisk"></em></span></label>
+		        <input type="text" class="form-control" name="contactContactName" id="contactContactName" placeholder="Saisissez votre Nom" value="{{ fbUser.name }}" required>
+		        <input type="hidden" class="form-control" name="contactFbId" id="contactFbId" value="{{ fbUser.id }}" required>
 		    </div>
 		    <div class="form-group">
-		        <label for="contactEmail">Adresse eMail :</label>
-		        <input type="email" class="form-control" name="contactEmail" id="contactEmail" placeholder="Saisissez votre eMail">
+		        <label for="contactEmail">Adresse eMail : <span class="text-danger"><em class="fas fa-asterisk"></em></span></label>
+		        <input type="email" class="form-control" name="contactEmail" id="contactEmail" placeholder="Saisissez votre eMail" required>
 		    </div>
 		    <div class="form-group">
-		        <label for="contactUsername">Nom Entreprise :</label>
-		        <input type="text" class="form-control" name="contactUsername" id="contactUsername" placeholder="Saisissez votre Entreprise">
+		        <label for="contactUsername">Nom Entreprise : <span class="text-danger"><em class="fas fa-asterisk"></em></span></label>
+		        <input type="text" class="form-control" name="contactUsername" id="contactUsername" placeholder="Saisissez votre Entreprise" required>
 		    </div>
 		    <div class="form-group">
-		        <label for="contactAddress">Adresse Entreprise :</label>
-		        <textarea class="form-control" name="contactAddress" id="contactAddress" placeholder="Saisissez votre Adresse"></textarea>
+		        <label for="contactAddress">Adresse Entreprise : <span class="text-danger"><em class="fas fa-asterisk"></em></span></label>
+		        <textarea class="form-control" name="contactAddress" id="contactAddress" placeholder="Saisissez votre Adresse" required></textarea>
 		    </div>
 		    <div class="form-group">
 		        <div class="g-recaptcha" data-sitekey="{{ captchaSiteKey }}"></div>
