@@ -19,7 +19,7 @@ class UserClientController extends AbstractController
     public function apiListUserClient(UserClientRepository $repo, SerializerInterface $seri)
     {
         $user = $this->getUser();
-        $clients = $repo->findBy("userId" => $user->getId());
+        $clients = $repo->findBy(["userId" => $user->getId()]);
         $data = $seri->serialize($clients, 'json', SerializationContext::create()->setGroups(array('list')));
         return JsonResponse::fromJsonString($data);
     }
