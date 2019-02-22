@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -13,36 +14,43 @@ class Article
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"list"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"list", "detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Serializer\Groups({"detail"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="float")
+     * @Serializer\Groups({"list", "detail"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"list", "detail"})
      */
     private $stock;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"detail"})
      */
     private $model;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"detail"})
      */
     private $brand;
 

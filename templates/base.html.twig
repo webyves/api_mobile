@@ -2,11 +2,53 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <title>{% block title %}Welcome!{% endblock %}</title>
+        <!-- CSS Library -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+        <link rel="stylesheet" href="/css/main.css">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #e3f2fd;">
+            <a class="navbar-brand" href="{{ path('login_client') }}">BileMo</a>
+            <div class="">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('contact') }}" title="Contact"><em class="fas fa-envelope-open"></em></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('mentions') }}" title="Mentions Legales"><em class="fas fa-balance-scale"></em></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('politique') }}" title="Politique de confidientialité"><em class="fas fa-mask"></em></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+			<div class="row">
+			    <div class="col">
+			    {% for label, messages in app.flashes %}
+			        {% for message in messages %}
+			        <div class="flash-{{ label }} alert alert-{{ label }} alert-dismissible fade show" role="alert">
+			            {{ message | raw }}
+			            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			                <span aria-hidden="true">&times;</span>
+			            </button>
+			        </div>
+			        {% endfor %}
+			    {% endfor %}
+			    </div>
+			</div>
+        	{% block body %}{% endblock %}
+		</div>
+        <!-- JS Library -->
+        <script src="/js/jquery-3.3.1.min.js"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

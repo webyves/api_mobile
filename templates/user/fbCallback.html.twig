@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Congrats Client !{% endblock %}
+
+{% block body %}
+<div class="">
+    <h1>Congrats you are logged on !</h1>
+</div>
+<div class="">
+	<label for="validationTooltipUsername">OAuth Token</label>
+	<div class="input-group mb-3">
+		<input class="form-control" type="text" id="inputFbToken" value="{{ fbToken }}" readonly>
+		<div class="input-group-append">
+			<button class="btn btn-outline-info" type="button" id="button-copy-token"><i class="far fa-copy"></i> Copier</button>
+		</div>
+	</div>
+
+	<ul>
+		<li>Votre Id : {{ user.id }}</li>
+		<li>Votre FB Id : {{ user.fbId }}</li>
+		<li>Votre FB Name : {{ user.fbName }}</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src='js/copy_button.js'></script>
+{% endblock %}
+
