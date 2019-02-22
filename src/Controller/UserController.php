@@ -5,18 +5,17 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\FacebookResponse;
-use App\Entity\Client;
-use App\Repository\ClientRepository;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\BileMoEmails;
-use App\Service\ReCpatchaV2;
+use JMS\Serializer\SerializerInterface;
 
-class ClientController extends AbstractController
+class UserController extends AbstractController
 {
     /**
      * @Route("/", name="login_client")
@@ -38,7 +37,7 @@ class ClientController extends AbstractController
 		$permissions = ['email']; // Optional permissions
 		$loginUrl = htmlspecialchars($helper->getLoginUrl('https://' . $request->server->get('HTTP_HOST') . '/fb-callback', $permissions));
 
-        return $this->render('client/index.html.twig', [
+        return $this->render('user/index.html.twig', [
             'loginUrl' => $loginUrl,
         ]);
     }
@@ -46,7 +45,7 @@ class ClientController extends AbstractController
     /**
      * @Route("/fb-callback", name="login_client_fb-callback")
      */
-    public function fbCallback(EntityManagerInterface $manager, ClientRepository $clientRepo)
+    public function fbCallback(EntityManagerInterface $manager, UserRepository $userRepo)
     {
 		if (!session_id()) {
 		    session_start();
@@ -63,7 +62,7 @@ class ClientController extends AbstractController
 		try {
 		  $accessToken = $helper->getAccessToken();
 		  $response = $fb->get('/me?fields=id,name', $accessToken->getValue());
-		  $user = $response->getGraphUser();
+		  $fbUser = $response->getGraphUser();
 		} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		  // When Graph returns an error
 		  echo 'Graph returned an error: ' . $e->getMessage();
@@ -124,43 +123,32 @@ class ClientController extends AbstractController
 		// You can redirect them to a members-only page.
 		//header('Location: https://example.com/members.php');
 
-		$client = $clientRepo->findOneBy(['fbId'=>$user->getId()]);
-		// $fbid_override="123456";
-		// $client = $clientRepo->findOneBy(['fbId'=>$fbid_override]);
 
-		if (empty($client)) {
-	        return $this->render('client/askForAccount.html.twig', [
-	            'fbUser' => $user,
-	            'captchaSiteKey' =>  $this->getParameter('captcha.sitekey'),
-	        ]);
+		$user = $userRepo->findOneBy(['fbId'=>$fbUser->getId()]);
+		if (!$user) {
+			$user = new User();
+			$user->setFbId($fbUser->getId());
 		}
-		$client->setFbToken($accessToken->getValue());
-		$manager->persist($client);
+		$user->setFbName($fbUser->getName())
+			 ->setFbToken($accessToken->getValue());
+		$manager->persist($user);
 		$manager->flush();
 
 
-        return $this->render('client/fbCallback.html.twig', [
+        return $this->render('user/fbCallback.html.twig', [
             'fbToken' => $accessToken->getValue(),
-            'fbUser' => $user,
-            'client' => $client,
+            'user' => $user
         ]);
 
     }
 
     /**
-     * @Route("/ask-for-account", name="ask_for_account")
+     * @Route("/api/user", name="show_user", methods={"GET"})
      */
-    public function askForAccount(Request $request, BileMoEmails $emailService)
+    public function apiShowUser(SerializerInterface $seri)
     {
-    	// VERIFIER LE CAPTCHA
-        if(ReCpatchaV2::checkValue($request, $this->getParameter('captcha.secretkey'))) {
-	    	// VERIFIER INFOS
-	    	// SEND EMAIL WITH INFOS
-			$emailService->emailAskForAccount($request, $this->getParameter('admin.email'));
-	    	$this->addflash('success','Votre demande de création de compte a bien été envoyée !');
-			return $this->redirectToRoute('login_client');
-		}
-        $this->addFlash('danger', 'Il y a une erreur avec le captcha !');
-        return $this->redirectToRoute('login_client');
+    	$user = $this->getUser();
+        $data = $seri->serialize($user, 'json');
+        return JsonResponse::fromJsonString($data);
     }    
 }
