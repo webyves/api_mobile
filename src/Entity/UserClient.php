@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserClientRepository")
@@ -57,27 +58,65 @@ class UserClient
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list", "detail"})
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list", "detail"})
+     * @Assert\NotBlank
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"detail"})
+     * @Assert\NotBlank
      */
     private $address;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Serializer\Groups({"detail"})
+     * @Assert\NotBlank
+     */
+    private $zipCode;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"detail"})
+     * @Assert\NotBlank
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Serializer\Groups({"detail"})
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Serializer\Groups({"detail"})
+     */
+    private $birthDate;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"list", "detail"})
+     * @Assert\NotBlank
+     * @Assert\DateTime
+     * @var string A "Y-m-d H:i:s" formatted value
+     */
+    private $createdDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userClients")
      * @ORM\JoinColumn(nullable=false)
      * @Serializer\Exclude
      */
-    private $userId;
+    private $user;
 
     public function getId(): ?int
     {
@@ -120,14 +159,74 @@ class UserClient
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(?User $userId): self
+    public function setUser(?User $user): self
     {
-        $this->userId = $userId;
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(string $zipCode): self
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getBirthDate(): ?\DateTimeInterface
+    {
+        return $this->birthDate;
+    }
+
+    public function setBirthDate(?\DateTimeInterface $birthDate): self
+    {
+        $this->birthDate = $birthDate;
+
+        return $this;
+    }
+
+    public function getCreatedDate(): ?\DateTimeInterface
+    {
+        return $this->createdDate;
+    }
+
+    public function setCreatedDate(\DateTimeInterface $createdDate): self
+    {
+        $this->createdDate = $createdDate;
 
         return $this;
     }

@@ -30,7 +30,7 @@ class ArticleController extends AbstractController
     public function apiShowArticle(Article $article, SerializerInterface $seri)
     {
         $user = $this->getUser();
-        $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail')));
+        $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
         return JsonResponse::fromJsonString($data);
     }
 }
