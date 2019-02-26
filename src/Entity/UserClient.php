@@ -4,9 +4,45 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserClientRepository")
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "user_client_show",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true,
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"list"})
+ * )
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "user_client_delete",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"list", "detail"})
+ * )
+ * @Hateoas\Relation(
+ *      "create",
+ *      href = @Hateoas\Route(
+ *          "user_client_create",
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"list", "detail"})
+ * )
+ * @Hateoas\Relation(
+ *      "list",
+ *      href = @Hateoas\Route(
+ *          "user_client_list",
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"detail"})
+
+ * )
  */
 class UserClient
 {
