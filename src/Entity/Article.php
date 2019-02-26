@@ -4,9 +4,28 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "show_article",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true,
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"list"})
+ * )
+ * @Hateoas\Relation(
+ *      "list",
+ *      href = @Hateoas\Route(
+ *          "list_articles",
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"detail"})
+
+ * )
  */
 class Article
 {
