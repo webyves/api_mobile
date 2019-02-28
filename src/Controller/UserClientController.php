@@ -51,9 +51,14 @@ class UserClientController extends AbstractController
         $userClient->setUser($user);
         $userClient->setCreatedDate(new \DateTime());
 
-        $errors = $validator->validate($article);
+        $errors = $validator->validate($userClient);
         if (count($errors)) {
-            return new Response('ERROR IN DATA !', Response::HTTP_BAD_REQUEST);
+            $errMsg = "";
+            foreach ($errors as $violation) {
+                $errMsg .= $violation->getPropertyPath() . " : " .$violation->getInvalidValue() . " " . $violation->getMessageTemplate().'<br>';
+            }
+
+            return new Response('ERROR IN DATA !<br>'. $errMsg, Response::HTTP_BAD_REQUEST);
         }
 
         $emi->persist($userClient);

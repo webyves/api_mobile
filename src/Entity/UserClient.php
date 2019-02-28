@@ -65,6 +65,7 @@ class UserClient
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list", "detail"})
+     * @Assert\Email
      * @Assert\NotBlank
      */
     private $email;
@@ -99,6 +100,7 @@ class UserClient
     /**
      * @ORM\Column(type="date", nullable=true)
      * @Serializer\Groups({"detail"})
+     * @Assert\Date
      */
     private $birthDate;
 
@@ -107,7 +109,6 @@ class UserClient
      * @Serializer\Groups({"list", "detail"})
      * @Assert\NotBlank
      * @Assert\DateTime
-     * @var string A "Y-m-d H:i:s" formatted value
      */
     private $createdDate;
 
