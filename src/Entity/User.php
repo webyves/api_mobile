@@ -58,7 +58,7 @@ class User implements UserInterface
     private $phone;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserClient", mappedBy="userId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserClient", mappedBy="user", orphanRemoval=true)
      */
     private $userClients;
 

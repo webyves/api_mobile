@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserClient;
 use App\Repository\UserClientRepository;
@@ -21,7 +22,7 @@ class UserClientController extends AbstractController
     public function apiListUserClient(UserClientRepository $repo, SerializerInterface $seri)
     {
         $user = $this->getUser();
-        $clients = $repo->findBy(["userId" => $user]);
+        $clients = $repo->findBy(["user" => $user]);
         $data = $seri->serialize($clients, 'json', SerializationContext::create()->setGroups(array('list')));
         return JsonResponse::fromJsonString($data);
     }
@@ -32,24 +33,34 @@ class UserClientController extends AbstractController
     public function apiShowUserClient(UserClient $userClient, SerializerInterface $seri)
     {
         $user = $this->getUser();
-        if ($user !== $userClient->getUserId()) {
+        if ($user !== $userClient->getUser()) {
         	return new Response('UNAUTHORIZED ACTION !', Response::HTTP_UNAUTHORIZED);
         }
-        $data = $seri->serialize($userClient, 'json', SerializationContext::create()->setGroups(array('detail')));
+        $data = $seri->serialize($userClient, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
         return JsonResponse::fromJsonString($data);
     }
 
     /**
      * @Route("/api/client/create", name="user_client_create", methods={"POST"})
      */
-    public function apiCreateUserClient(SerializerInterface $seri, Request $request, EntityManagerInterface $emi)
+    public function apiCreateUserClient(SerializerInterface $seri, Request $request, EntityManagerInterface $emi, ValidatorInterface $validator)
     {
         $user = $this->getUser();
         $data = $request->getContent();
         $userClient = $seri->deserialize($data, 'App\Entity\UserClient', 'json');
-        $userClient->setUserId($user);
+        $userClient->setUser($user);
+        $userClient->setCreatedDate(new \DateTime());
 
-        // FAIRE LA VALIDATION DES DONNEES
+        $errors = $validator->validate($userClient);
+        if (count($errors)) {
+            $errMsg = "";
+            foreach ($errors as $violation) {
+                $errMsg .= $violation->getPropertyPath() . " : " .$violation->getInvalidValue() . " " . $violation->getMessageTemplate().'<br>';
+            }
+
+            return new Response('ERROR IN DATA !<br>'. $errMsg, Response::HTTP_BAD_REQUEST);
+        }
+
         $emi->persist($userClient);
         $emi->flush();        
         return new Response('CREATION COMPLETED', Response::HTTP_CREATED);
@@ -61,7 +72,7 @@ class UserClientController extends AbstractController
     public function apiDeleteUserClient(UserClient $userClient, EntityManagerInterface $emi)
     {
         $user = $this->getUser();
-        if ($user !== $userClient->getUserId()) {
+        if ($user !== $userClient->getUser()) {
         	return new Response('UNAUTHORIZED ACTION !', Response::HTTP_UNAUTHORIZED);
         }
 		$emi->remove($userClient);
