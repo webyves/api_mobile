@@ -25,7 +25,11 @@ class ExceptionListener implements EventSubscriberInterface
         // You get the exception object from the received event
         $exception = $event->getException();
         // Customize your response object to display the exception details
-        $response = new JsonResponse(json_decode($exception->getMessage()), $exception->getStatusCode());
+        $error_code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($exception instanceof \App\Exception\ValidationException) {
+        	$error_code = Response::HTTP_BAD_REQUEST;
+        }
+        $response = new JsonResponse(json_decode($exception->getMessage()), $error_code);
         // sends the modified response object to the event
         $event->setResponse($response);
     }
