@@ -11,7 +11,6 @@ class ValidCreateUserClient
             $errMsg = array('ERROR IN DATA !');
             foreach ($errors as $violation) {
                 $errMsg[$violation->getPropertyPath()] = $violation->getInvalidValue() . " " . $violation->getMessageTemplate().' ';
-                // $errMsg .= $violation->getPropertyPath() . " : " .$violation->getInvalidValue() . " " . $violation->getMessageTemplate().' ';
             }
             throw new ValidationException(json_encode($errMsg));
         }
