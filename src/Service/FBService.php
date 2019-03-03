@@ -7,6 +7,7 @@ use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\FacebookResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class FBService
 {
@@ -18,9 +19,13 @@ class FBService
     {
 		$this->fbAppId = $fbAppId;
 		$this->fbAppSecret = $fbAppSecret;
+    }
 
-		if (!session_id()) {
-		    session_start();
+    private function launchFB(Request $request)
+    {
+		if (!$request->hasSession()) {
+			$session = new Session();
+			$session->start();
 		}
 
 		$fb = new Facebook([
@@ -28,12 +33,13 @@ class FBService
 		  'app_secret' => $this->fbAppSecret,
 		  'default_graph_version' => 'v3.2',
 		  ]);
-		
+
 		$this->fb = $fb;
     }
 
     public function genLoginUrl(Request $request)
     {
+    	$this->launchFB($request);
 		$helper = $this->fb->getRedirectLoginHelper();
 
 		$permissions = ['email']; // Optional permissions
@@ -41,9 +47,9 @@ class FBService
 		return $loginUrl;
     }
 
-    public function fbLogin()
+    public function fbLogin(Request $request)
     {
-
+    	$this->launchFB($request);
 		$helper = $this->fb->getRedirectLoginHelper();
 
 		try {

@@ -13,27 +13,6 @@ class BileMoEmails
         $this->twig = $twig;
     }
 
-    public function emailAskForAccount(Request $request, $toEmail)
-    {
-        $message = (new \Swift_Message('BileMo - Demande Ouverture de Compte'))
-            ->setFrom(strip_tags($request->request->get('contactEmail')))
-            ->setTo($toEmail)
-            ->setBody(
-                $this->twig->render(
-                    'emails/emailAskForAccount.html.twig',
-                    array(
-                        'contactName' => strip_tags($request->request->get('contactContactName')),
-                        'fbId' => strip_tags($request->request->get('contactFbId')),
-                        'username' => strip_tags($request->request->get('contactUsername')),
-                        'address' => strip_tags($request->request->get('contactAddress')),
-                        'email' => strip_tags($request->request->get('contactEmail'))
-                    )
-                ),
-                'text/html'
-            );
-        $this->mailer->send($message);
-    }
-
     public function emailContact(Request $request, $toEmail)
     {
         $message = (new \Swift_Message('BileMo - Formulaire de contact'))
