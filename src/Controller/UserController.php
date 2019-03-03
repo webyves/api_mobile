@@ -6,10 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Facebook\Facebook;
-use Facebook\Exceptions\FacebookResponseException;
-use Facebook\Exceptions\FacebookSDKException;
-use Facebook\FacebookResponse;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,10 +27,10 @@ class UserController extends AbstractController
     /**
      * @Route("/fb-callback", name="login_client_fb-callback")
      */
-    public function fbCallback(EntityManagerInterface $manager, UserRepository $userRepo, FBService $fbs)
+    public function fbCallback(Request $request, EntityManagerInterface $manager, UserRepository $userRepo, FBService $fbs)
     {
 
-    	$fbInfos = $fbs->fbLogin();
+    	$fbInfos = $fbs->fbLogin($request);
 
 		$user = $userRepo->findOneBy(['fbId' => $fbInfos['fbUser']->getId()]);
 		if (!$user) {
