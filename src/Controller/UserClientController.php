@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserClient;
+use App\service\ValidCreateUserClient;
 use App\Repository\UserClientRepository;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
@@ -32,10 +33,7 @@ class UserClientController extends AbstractController
      */
     public function apiShowUserClient(UserClient $userClient, SerializerInterface $seri)
     {
-        $user = $this->getUser();
-        if ($user !== $userClient->getUser()) {
-        	return new Response('UNAUTHORIZED ACTION !', Response::HTTP_UNAUTHORIZED);
-        }
+        $this->denyAccessUnlessGranted('SHOW', $userClient);        
         $data = $seri->serialize($userClient, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
         return JsonResponse::fromJsonString($data);
     }
@@ -51,19 +49,11 @@ class UserClientController extends AbstractController
         $userClient->setUser($user);
         $userClient->setCreatedDate(new \DateTime());
 
-        $errors = $validator->validate($userClient);
-        if (count($errors)) {
-            $errMsg = "";
-            foreach ($errors as $violation) {
-                $errMsg .= $violation->getPropertyPath() . " : " .$violation->getInvalidValue() . " " . $violation->getMessageTemplate().'<br>';
-            }
-
-            return new Response('ERROR IN DATA !<br>'. $errMsg, Response::HTTP_BAD_REQUEST);
-        }
+        ValidCreateUserClient::checkValue($validator->validate($userClient));
 
         $emi->persist($userClient);
-        $emi->flush();        
-        return new Response('CREATION COMPLETED', Response::HTTP_CREATED);
+        $emi->flush();
+        return new JsonResponse('CREATION COMPLETED', Response::HTTP_CREATED);
     }
 
     /**
@@ -71,12 +61,9 @@ class UserClientController extends AbstractController
      */
     public function apiDeleteUserClient(UserClient $userClient, EntityManagerInterface $emi)
     {
-        $user = $this->getUser();
-        if ($user !== $userClient->getUser()) {
-        	return new Response('UNAUTHORIZED ACTION !', Response::HTTP_UNAUTHORIZED);
-        }
-		$emi->remove($userClient);
+        $this->denyAccessUnlessGranted('DELETE', $userClient);        
+        $emi->remove($userClient);
 	    $emi->flush();
-        return new Response('DELETION COMPLETED', Response::HTTP_ACCEPTED);
+        return new JsonResponse('DELETION COMPLETED', Response::HTTP_ACCEPTED);
     }
 }
