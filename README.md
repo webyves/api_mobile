@@ -4,6 +4,7 @@ Projet 7 du parcours DA PHP/Symfony de OpenClassrooms
 - lien fichier Git : https://github.com/webyves/api_mobile
 
 # Code Validation
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4b2820c047f542e0b4206082da446a8b)](https://app.codacy.com/app/webyves/api_mobile?utm_source=github.com&utm_medium=referral&utm_content=webyves/api_mobile&utm_campaign=Badge_Grade_Dashboard)
 - [![SymfonyInsight](https://insight.symfony.com/projects/8ca6aaf9-d9ae-42b1-a5ec-d1bf37a935b5/big.svg)](https://insight.symfony.com/projects/8ca6aaf9-d9ae-42b1-a5ec-d1bf37a935b5)
 - codacy badge
 - liens vers analyse Codacy : https://app.codacy.com/project/webyves/snow_tricks/dashboard
