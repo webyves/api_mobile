@@ -10,10 +10,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserClient;
+use App\service\ValidCreateUserClient;
 use App\Repository\UserClientRepository;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
-use App\Exception\ValidationException;
 
 class UserClientController extends AbstractController
 {
@@ -49,15 +49,7 @@ class UserClientController extends AbstractController
         $userClient->setUser($user);
         $userClient->setCreatedDate(new \DateTime());
 
-        $errors = $validator->validate($userClient);
-        if (count($errors)) {
-            $errMsg = array('ERROR IN DATA !');
-            foreach ($errors as $violation) {
-                $errMsg[$violation->getPropertyPath()] = $violation->getInvalidValue() . " " . $violation->getMessageTemplate().' ';
-                // $errMsg .= $violation->getPropertyPath() . " : " .$violation->getInvalidValue() . " " . $violation->getMessageTemplate().' ';
-            }
-            throw new ValidationException(json_encode($errMsg));
-        }
+        ValidCreateUserClient::checkValue($validator->validate($userClient));
 
         $emi->persist($userClient);
         $emi->flush();
