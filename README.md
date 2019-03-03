@@ -5,8 +5,8 @@ Projet 7 du parcours DA PHP/Symfony de OpenClassrooms
 
 # Code Validation
 - [![SymfonyInsight](https://insight.symfony.com/projects/8ca6aaf9-d9ae-42b1-a5ec-d1bf37a935b5/big.svg)](https://insight.symfony.com/projects/8ca6aaf9-d9ae-42b1-a5ec-d1bf37a935b5)
-- codacy badge
-- liens vers analyse Codacy : https://app.codacy.com/project/webyves/snow_tricks/dashboard
+- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4fe28bb32f0649368e07e40fde131ea7)](https://www.codacy.com/app/webyves/api_mobile?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webyves/api_mobile&amp;utm_campaign=Badge_Grade)
+- liens vers analyse Codacy : https://app.codacy.com/project/webyves/api_mobile/dashboard
 
 # Installation Notes (SANS ACCES SSH)
 1) Cloner le repository sur votre serveur
