@@ -14,19 +14,22 @@ class FBService
 	private $fbAppId;
 	private $fbAppSecret;
 
-    public function __construct($fbAppId, $fbAppSecret) {
+    public function __construct($fbAppId, $fbAppSecret) 
+    {
+		$this->fbAppId = $fbAppId;
+		$this->fbAppSecret = $fbAppSecret;
+
 		if (!session_id()) {
 		    session_start();
 		}
 
 		$fb = new Facebook([
-		  'app_id' => $fbAppId, 
-		  'app_secret' => $fbAppSecret,
+		  'app_id' => $this->fbAppId, 
+		  'app_secret' => $this->fbAppSecret,
 		  'default_graph_version' => 'v3.2',
 		  ]);
+		
 		$this->fb = $fb;
-		$this->fbAppId = $fbAppId;
-		$this->fbAppSecret = $fbAppSecret;
     }
 
     public function genLoginUrl(Request $request)
