@@ -23,9 +23,10 @@ class FBService
 
     private function launchFB(Request $request)
     {
-		if (!$request->hasSession()) {
-			$session = new Session();
-			$session->start();
+    	// FACEBOOK-SDK NEED TO STOCK INTEL IN $_SESSION 
+    	// CAN'T USE SYMFONY SESSION SYSTEM WITHOUT MODIFING THE FB-SDK 
+		if (!session_id()) {
+			session_start();
 		}
 
 		$fb = new Facebook([
