@@ -10,12 +10,17 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+            
         main:
             anonymous: true
-            
             guard:
                 authenticators:
                     - App\Security\TokenAuthenticator
+
+        # api_doc:
+        #     pattern: ^/api/doc
+        #     anonymous: true
+            # security: false
 
             # activate different ways to authenticate
 

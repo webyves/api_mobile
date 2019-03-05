@@ -7,6 +7,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use App\Exception\ValidationException;
+use App\Exception\BearerException;
 
 class ExceptionListener implements EventSubscriberInterface
 {
@@ -25,10 +27,15 @@ class ExceptionListener implements EventSubscriberInterface
         // You get the exception object from the received event
         $exception = $event->getException();
     	// Customize your response object to display the exception details
-        if ($exception instanceof \App\Exception\ValidationException) {
-	        $response = new JsonResponse(json_decode($exception->getMessage()), Response::HTTP_BAD_REQUEST);
-	        // sends the modified response object to the event
-	        $event->setResponse($response);
+        if ($exception instanceof ValidationException) {
+            $response = new JsonResponse(json_decode($exception->getMessage()), Response::HTTP_BAD_REQUEST);
+            // sends the modified response object to the event
+            $event->setResponse($response);
+        }
+        if ($exception instanceof BearerException) {
+            $response = new JsonResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+            // sends the modified response object to the event
+            $event->setResponse($response);
         }
     }
 }

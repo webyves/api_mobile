@@ -11,6 +11,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use App\Exception\BearerException;
 
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
@@ -38,6 +39,9 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request)
     {
         $authorization = explode("Bearer ", $request->headers->get('authorization'));
+        if (!isset($authorization[1])) {
+            throw new BearerException("Error Processing Request : In authorization field 'Bearer ' is required");
+        }
         return [
             'token' => $authorization[1],
         ];
