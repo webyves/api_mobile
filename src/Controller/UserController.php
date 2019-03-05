@@ -27,10 +27,10 @@ class UserController extends AbstractController
     /**
      * @Route("/fb-callback", name="login_client_fb-callback")
      */
-    public function fbCallback(Request $request, EntityManagerInterface $manager, UserRepository $userRepo, FBService $fbs)
+    public function fbCallback(EntityManagerInterface $manager, UserRepository $userRepo, FBService $fbs)
     {
 
-    	$fbInfos = $fbs->fbLogin($request);
+    	$fbInfos = $fbs->fbLogin();
 
 		$user = $userRepo->findOneBy(['fbId' => $fbInfos['fbUser']->getId()]);
 		if (!$user) {
