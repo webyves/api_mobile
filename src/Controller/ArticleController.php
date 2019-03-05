@@ -40,6 +40,10 @@ class ArticleController extends AbstractController
      *     description="Get Details of an Article.",
      *     @Model(type=Article::class)
      * )
+     * @Doc\Response(
+     *     response=404,
+     *     description="This Article does not exist."
+     * )
      * @Doc\Parameter(
      *     name="id",
      *     in="path",

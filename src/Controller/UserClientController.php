@@ -42,12 +42,17 @@ class UserClientController extends AbstractController
      * @Route("/api/client/{id}", name="user_client_show", requirements={"id"="\d+"}, methods={"GET"})
      * @Doc\Response(
      *     response=200,
-     *     description="Get Details of one of your Clients."
+     *     description="Get Details of one of your Clients.",
+     *     @Model(type=UserClient::class)
      *     )
      * )
      * @Doc\Response(
      *     response=403,
      *     description="You are not authorized to get this client's infos."
+     * )
+     * @Doc\Response(
+     *     response=404,
+     *     description="This Client does not exist."
      * )
      * @Doc\Parameter(
      *     name="id",
@@ -110,6 +115,10 @@ class UserClientController extends AbstractController
      * @Doc\Response(
      *     response=403,
      *     description="You are not authorized to delete this client."
+     * )
+     * @Doc\Response(
+     *     response=404,
+     *     description="This Client does not exist."
      * )
      * @Doc\Parameter(
      *     name="id",
