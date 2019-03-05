@@ -101,6 +101,7 @@ class UserClient
      * @ORM\Column(type="date", nullable=true)
      * @Serializer\Groups({"detail"})
      * @Assert\Date
+     * @var string "Y-m-d H:i:s" formatted value
      */
     private $birthDate;
 
@@ -109,6 +110,7 @@ class UserClient
      * @Serializer\Groups({"list", "detail"})
      * @Assert\NotBlank
      * @Assert\DateTime
+     * @var string "Y-m-d H:i:s" formatted value
      */
     private $createdDate;
 

@@ -11,6 +11,9 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use App\Service\FBService;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as Doc;
 
 class UserController extends AbstractController
 {
@@ -52,6 +55,13 @@ class UserController extends AbstractController
 
     /**
      * @Route("/api/user", name="show_user", methods={"GET"})
+     * @Doc\Response(
+     *     response=200,
+     *     description="Get your infos and list of all your Clients.",
+     *     @Model(type=User::class)
+     * )
+     * @Doc\Tag(name="Your Infos")
+     * @Security(name="Bearer")
      */
     public function apiShowUser(SerializerInterface $seri)
     {
