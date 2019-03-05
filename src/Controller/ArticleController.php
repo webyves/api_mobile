@@ -21,6 +21,7 @@ class ArticleController extends AbstractController
      *     response=200,
      *     description="Get list of all our Articles."
      * )
+     * 
      * @Doc\Tag(name="BileMo Articles")
      * @Security(name="Bearer")
      */
@@ -36,7 +37,8 @@ class ArticleController extends AbstractController
      * @Route("/api/article/{id}", name="show_article", requirements={"id"="\d+"}, methods={"GET"})
      * @Doc\Response(
      *     response=200,
-     *     description="Get Details of an Article."
+     *     description="Get Details of an Article.",
+     *     @Model(type=Article::class)
      * )
      * @Doc\Parameter(
      *     name="id",
