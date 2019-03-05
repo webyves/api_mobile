@@ -21,7 +21,7 @@ class FBService
 		$this->fbAppSecret = $fbAppSecret;
     }
 
-    private function launchFB(Request $request)
+    private function launchFB()
     {
     	// FACEBOOK-SDK NEED TO STOCK INTEL IN $_SESSION 
     	// CAN'T USE SYMFONY SESSION SYSTEM WITHOUT MODIFING THE FB-SDK 
@@ -40,7 +40,7 @@ class FBService
 
     public function genLoginUrl(Request $request)
     {
-    	$this->launchFB($request);
+    	$this->launchFB();
 		$helper = $this->fb->getRedirectLoginHelper();
 
 		$permissions = ['email']; // Optional permissions
@@ -48,9 +48,9 @@ class FBService
 		return $loginUrl;
     }
 
-    public function fbLogin(Request $request)
+    public function fbLogin()
     {
-    	$this->launchFB($request);
+    	$this->launchFB();
 		$helper = $this->fb->getRedirectLoginHelper();
 
 		try {
