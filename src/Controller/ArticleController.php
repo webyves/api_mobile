@@ -12,6 +12,7 @@ use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as Doc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ArticleController extends AbstractController
 {
@@ -52,6 +53,7 @@ class ArticleController extends AbstractController
      * )
      * @Doc\Tag(name="BileMo Articles")
      * @Security(name="Bearer")
+     * @Cache(lastModified="article.getUpdatedDate()", public=true)
      */
     public function apiShowArticle(Article $article, SerializerInterface $seri)
     {
