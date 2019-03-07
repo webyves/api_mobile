@@ -10,8 +10,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserClient;
-use App\Service\ValidCreateUserClient;
 use App\Repository\UserClientRepository;
+use App\Service\ValidCreateUserClient;
+use App\Service\JsonListPagination;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -28,14 +29,36 @@ class UserClientController extends AbstractController
      *     description="Get the list of your Clients."
      *     )
      * )
+     * @Doc\Parameter(
+     *     name="page",
+     *     in="query",
+     *     type="integer",
+     *     default="1",
+     *     description="Number of the Page<br>Example: Add ?page=2 in the Url to get Page 2"
+     * )
+     * @Doc\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     type="integer",
+     *     default="5",
+     *     description="Number of Clients per Page<br>Example: Add ?limit=50 in the Url to get 50 Clients"
+     * )
      * @Doc\Tag(name="Managing your Clients")
      * @Security(name="Bearer")
      */
-    public function apiListUserClient(UserClientRepository $repo, SerializerInterface $seri)
+    public function apiListUserClient(Request $request,UserClientRepository $repo, SerializerInterface $seri)
     {
         $user = $this->getUser();
-        $clients = $repo->findBy(["user" => $user]);
-        $data = $seri->serialize($clients, 'json', SerializationContext::create()->setGroups(array('list')));
+
+        $jlp = new JsonListPagination($request, $repo);
+        $PaginatedUserClient = $jlp->getUserClientPaginated($user);
+
+        $data = $seri->serialize(
+                    $PaginatedUserClient, 
+                    'json', 
+                    SerializationContext::create()->setGroups(['Default', 'Client_Collection' => ['list']])
+                );
+
         return JsonResponse::fromJsonString($data);
     }
 
