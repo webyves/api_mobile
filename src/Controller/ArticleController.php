@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
@@ -13,6 +14,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as Doc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use App\Service\JsonListPagination;
 
 class ArticleController extends AbstractController
 {
@@ -22,15 +24,36 @@ class ArticleController extends AbstractController
      *     response=200,
      *     description="Get list of all our Articles."
      * )
-     * 
+     * @Doc\Parameter(
+     *     name="page",
+     *     in="query",
+     *     type="integer",
+     *     default="1",
+     *     description="Number of the Page<br>Example: Add ?page=2 in the Url to get Page 2"
+     * )
+     * @Doc\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     type="integer",
+     *     default="5",
+     *     description="Number of Articles per Page<br>Example: Add ?limit=50 in the Url to get 50 Articles"
+     * )
      * @Doc\Tag(name="BileMo Articles")
      * @Security(name="Bearer")
      */
-    public function apiListArticles(ArticleRepository $repo, SerializerInterface $seri)
+    public function apiListArticles(ArticleRepository $repo, SerializerInterface $seri, Request $request)
     {
         $user = $this->getUser();
-        $articles = $repo->findAll();
-        $data = $seri->serialize($articles, 'json', SerializationContext::create()->setGroups(array('list')));
+
+        $jlp = new JsonListPagination($request, $repo);
+        $PaginatedArticles = $jlp->getArticlePaginated();
+
+        $data = $seri->serialize(
+                    $PaginatedArticles, 
+                    'json', 
+                    SerializationContext::create()->setGroups(['Default', 'Article_Collection' => ['list']])
+                );
+
         return JsonResponse::fromJsonString($data);
     }
 
@@ -59,6 +82,10 @@ class ArticleController extends AbstractController
     {
         $user = $this->getUser();
         $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
+        // $response = JsonResponse::fromJsonString($data);
+        // $response->setLastModified($article->getUpdatedDate());
+        // $response->setSharedMaxAge(6000);
+        // return $response;
         return JsonResponse::fromJsonString($data);
     }
 }
