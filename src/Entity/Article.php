@@ -73,6 +73,12 @@ class Article
      */
     private $brand;
 
+    /**
+     * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"list", "detail"})
+     */
+    private $updatedDate;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -146,6 +152,18 @@ class Article
     public function setBrand(string $brand): self
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getUpdatedDate(): ?\DateTimeInterface
+    {
+        return $this->updatedDate;
+    }
+
+    public function setUpdatedDate(\DateTimeInterface $updatedDate): self
+    {
+        $this->updatedDate = $updatedDate;
 
         return $this;
     }

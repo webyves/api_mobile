@@ -10,13 +10,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserClient;
-use App\service\ValidCreateUserClient;
+use App\Service\ValidCreateUserClient;
 use App\Repository\UserClientRepository;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as Doc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class UserClientController extends AbstractController
 {
@@ -62,6 +63,7 @@ class UserClientController extends AbstractController
      * )
      * @Doc\Tag(name="Managing your Clients")
      * @Security(name="Bearer")
+     * @Cache(lastModified="userClient.getUpdatedDate()", public=true)
      */
     public function apiShowUserClient(UserClient $userClient, SerializerInterface $seri)
     {
@@ -96,14 +98,57 @@ class UserClientController extends AbstractController
         $user = $this->getUser();
         $data = $request->getContent();
         $userClient = $seri->deserialize($data, 'App\Entity\UserClient', 'json');
-        $userClient->setUser($user);
-        $userClient->setCreatedDate(new \DateTime());
+        $userClient->setUser($user)
+                   ->setCreatedDate(new \DateTime())
+                   ->setUpdatedDate(new \DateTime());
 
         ValidCreateUserClient::checkValue($validator->validate($userClient));
 
         $emi->persist($userClient);
         $emi->flush();
         return new JsonResponse('CREATION COMPLETED', Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/api/client/update/{id}", name="user_client_update", requirements={"id"="\d+"}, methods={"POST"})
+     * @Doc\Response(
+     *     response=200,
+     *     description="Client correctly Updated."
+     *     )
+     * )
+     * @Doc\Response(
+     *     response=400,
+     *     description="Error in json you send see returned message for more infos."
+     * )
+     * @Doc\Response(
+     *     response=403,
+     *     description="You are not authorized to get this client's infos."
+     * )
+     * @Doc\Response(
+     *     response=404,
+     *     description="This Client does not exist."
+     * )
+     * @Doc\Parameter(
+     *     name="Client",
+     *     in="body",
+     *     type="json",
+     *     description="All infos of the client",
+     *     @Doc\Schema(ref=@Model(type=UserClient::class))
+     * )
+     * @Doc\Tag(name="Managing your Clients")
+     * @Security(name="Bearer")
+     */
+    public function apiUpdateUserClient(UserClient $userClient, SerializerInterface $seri, Request $request, EntityManagerInterface $emi, ValidatorInterface $validator)
+    {
+        $this->denyAccessUnlessGranted('UPDATE', $userClient);   
+        $data = $request->getContent();
+        $userClientInfos = $seri->deserialize($data, 'App\Entity\UserClient', 'json');
+        $userClientInfos->setUser($this->getUser())->setCreatedDate(new \DateTime());
+        ValidCreateUserClient::checkValue($validator->validate($userClientInfos));
+        $userClient->updateFromOther($userClientInfos);
+        $emi->persist($userClient);
+        $emi->flush();
+        return new JsonResponse('UPDATE COMPLETED', Response::HTTP_ACCEPTED);
     }
 
     /**

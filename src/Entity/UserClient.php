@@ -19,6 +19,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      exclusion = @Hateoas\Exclusion(groups = {"list"})
  * )
  * @Hateoas\Relation(
+ *      "update",
+ *      href = @Hateoas\Route(
+ *          "user_client_update",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups = {"list", "detail"})
+ * )
+ * @Hateoas\Relation(
  *      "delete",
  *      href = @Hateoas\Route(
  *          "user_client_delete",
@@ -120,6 +129,13 @@ class UserClient
      * @Serializer\Exclude
      */
     private $user;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Groups({"list", "detail"})
+     * @Assert\DateTime
+     */
+    private $updatedDate;
 
     public function getId(): ?int
     {
@@ -230,6 +246,33 @@ class UserClient
     public function setCreatedDate(\DateTimeInterface $createdDate): self
     {
         $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    /**
+     * FUNCTION TO UPDATE A CLIENT FROM AN OTHER ONE
+     */
+    public function updateFromOther(UserClient $userClientInfos)
+    {
+        $this->setName($userClientInfos->getName())
+             ->setEmail($userClientInfos->getEmail())
+             ->setAddress($userClientInfos->getAddress())
+             ->setZipCode($userClientInfos->getZipCode())
+             ->setCity($userClientInfos->getCity())
+             ->setPhone($userClientInfos->getPhone())
+             ->setBirthDate($userClientInfos->getBirthDate())
+             ->setUpdatedDate(new \DateTime());
+    }
+
+    public function getUpdatedDate(): ?\DateTimeInterface
+    {
+        return $this->updatedDate;
+    }
+
+    public function setUpdatedDate(?\DateTimeInterface $updatedDate): self
+    {
+        $this->updatedDate = $updatedDate;
 
         return $this;
     }

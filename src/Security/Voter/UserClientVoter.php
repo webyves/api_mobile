@@ -12,7 +12,7 @@ class UserClientVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['SHOW', 'DELETE'])
+        return in_array($attribute, ['SHOW', 'DELETE', 'UPDATE'])
             && $userClient instanceof \App\Entity\UserClient;
     }
 
@@ -27,6 +27,7 @@ class UserClientVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case 'SHOW':
+            case 'UPDATE':
             case 'DELETE':
                 return $user == $userClient->getUser();
                 break;
