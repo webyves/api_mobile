@@ -17,6 +17,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Exclude
      */
     private $id;
 
@@ -39,6 +40,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Serializer\Exclude
      */
     private $fbToken;
 
@@ -59,6 +61,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserClient", mappedBy="user", orphanRemoval=true)
+     * @Serializer\Exclude
      */
     private $userClients;
 
