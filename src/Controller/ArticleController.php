@@ -82,10 +82,6 @@ class ArticleController extends AbstractController
     {
         $user = $this->getUser();
         $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
-        // $response = JsonResponse::fromJsonString($data);
-        // $response->setLastModified($article->getUpdatedDate());
-        // $response->setSharedMaxAge(6000);
-        // return $response;
         return JsonResponse::fromJsonString($data);
     }
 }
