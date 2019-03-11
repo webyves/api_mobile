@@ -57,7 +57,7 @@ class UserController extends AbstractController
      * @Route("/api/user", name="show_user", methods={"GET"})
      * @Doc\Response(
      *     response=200,
-     *     description="Get your infos.",
+     *     description="Get your infos.<br>Not Cached.",
      *     @Model(type=User::class)
      * )
      * @Doc\Tag(name="Your Infos")
