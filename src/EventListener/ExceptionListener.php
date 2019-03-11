@@ -1,4 +1,5 @@
 <?php
+
 namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -12,7 +13,7 @@ use App\Exception\BearerException;
 
 class ExceptionListener implements EventSubscriberInterface
 {
-	public static function getSubscribedEvents()
+    public static function getSubscribedEvents()
     {
         // return the subscribed events, their methods and priorities
         return [
@@ -26,7 +27,7 @@ class ExceptionListener implements EventSubscriberInterface
     {
         // You get the exception object from the received event
         $exception = $event->getException();
-    	// Customize your response object to display the exception details
+        // Customize your response object to display the exception details
         if ($exception instanceof ValidationException) {
             $response = new JsonResponse(json_decode($exception->getMessage()), Response::HTTP_BAD_REQUEST);
             // sends the modified response object to the event

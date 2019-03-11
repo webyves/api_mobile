@@ -8,7 +8,8 @@ class BileMoEmails
     private $mailer;
     private $twig;
 
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig) {
+    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig)
+    {
         $this->mailer = $mailer;
         $this->twig = $twig;
     }

@@ -48,19 +48,12 @@ class UserClientController extends AbstractController
      * @Security(name="Bearer")
      * @Cache(smaxage="3600", public=true)
      */
-    public function apiListUserClient(Request $request,UserClientRepository $repo, SerializerInterface $seri)
+    public function apiListUserClient(Request $request, UserClientRepository $repo, SerializerInterface $seri)
     {
         $user = $this->getUser();
-
         $jlp = new JsonListPagination($request, $repo);
         $PaginatedUserClient = $jlp->getUserClientPaginated($user);
-
-        $data = $seri->serialize(
-                    $PaginatedUserClient, 
-                    'json', 
-                    SerializationContext::create()->setGroups(['Default', 'Client_Collection' => ['list']])
-                );
-
+        $data = $seri->serialize($PaginatedUserClient, 'json', SerializationContext::create()->setGroups(['Default', 'Client_Collection' => ['list']]));
         return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }
 
@@ -92,10 +85,9 @@ class UserClientController extends AbstractController
      */
     public function apiShowUserClient(UserClient $userClient, SerializerInterface $seri)
     {
-        $this->denyAccessUnlessGranted('SHOW', $userClient);        
+        $this->denyAccessUnlessGranted('SHOW', $userClient);
         $data = $seri->serialize($userClient, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
-       return JsonResponse::fromJsonString($data,200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
-
+        return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }
 
     /**
@@ -166,7 +158,7 @@ class UserClientController extends AbstractController
      */
     public function apiUpdateUserClient(UserClient $userClient, SerializerInterface $seri, Request $request, EntityManagerInterface $emi, ValidatorInterface $validator)
     {
-        $this->denyAccessUnlessGranted('UPDATE', $userClient);   
+        $this->denyAccessUnlessGranted('UPDATE', $userClient);
         $data = $request->getContent();
         $userClientInfos = $seri->deserialize($data, 'App\Entity\UserClient', 'json');
         $userClientInfos->setUser($this->getUser())->setCreatedDate(new \DateTime());
@@ -202,9 +194,9 @@ class UserClientController extends AbstractController
      */
     public function apiDeleteUserClient(UserClient $userClient, EntityManagerInterface $emi)
     {
-        $this->denyAccessUnlessGranted('DELETE', $userClient);        
+        $this->denyAccessUnlessGranted('DELETE', $userClient);
         $emi->remove($userClient);
-	    $emi->flush();
+        $emi->flush();
         return new JsonResponse('DELETION COMPLETED', Response::HTTP_ACCEPTED);
     }
 }
