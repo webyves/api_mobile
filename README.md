@@ -8,6 +8,10 @@ Projet 7 du parcours DA PHP/Symfony de OpenClassrooms
 - [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4fe28bb32f0649368e07e40fde131ea7)](https://www.codacy.com/app/webyves/api_mobile?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webyves/api_mobile&amp;utm_campaign=Badge_Grade)
 - liens vers analyse Codacy : https://app.codacy.com/project/webyves/api_mobile/dashboard
 
+# Avant Propos 
+1) cette application necessite un compte google pour pouvoir utiliser le ReCaptcha V2
+2) cette application necessite un compte facebook developper et d'avoir créer une application loginFacebook, correctement renseignée et validée.
+
 # Installation Notes (SANS ACCES SSH)
 1) Cloner le repository sur votre serveur
 	- dé-zipper le fichier vendor.zip a la racine de votre dossier.
