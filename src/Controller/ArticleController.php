@@ -15,6 +15,7 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as Doc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use App\Service\JsonListPagination;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 
 class ArticleController extends AbstractController
 {
@@ -22,7 +23,7 @@ class ArticleController extends AbstractController
      * @Route("/api/articles", name="list_articles", methods={"GET"})
      * @Doc\Response(
      *     response=200,
-     *     description="Get list of all our Articles."
+     *     description="Get list of all our Articles.<br>Cached for 3 hours."
      * )
      * @Doc\Parameter(
      *     name="page",
@@ -40,6 +41,7 @@ class ArticleController extends AbstractController
      * )
      * @Doc\Tag(name="BileMo Articles")
      * @Security(name="Bearer")
+     * @Cache(smaxage="10800", public=true)
      */
     public function apiListArticles(ArticleRepository $repo, SerializerInterface $seri, Request $request)
     {
@@ -54,14 +56,14 @@ class ArticleController extends AbstractController
                     SerializationContext::create()->setGroups(['Default', 'Article_Collection' => ['list']])
                 );
 
-        return JsonResponse::fromJsonString($data);
+        return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }
 
     /**
      * @Route("/api/article/{id}", name="show_article", requirements={"id"="\d+"}, methods={"GET"})
      * @Doc\Response(
      *     response=200,
-     *     description="Get Details of an Article.",
+     *     description="Get Details of an Article.<br>Cached until updated.",
      *     @Model(type=Article::class)
      * )
      * @Doc\Response(
@@ -82,6 +84,6 @@ class ArticleController extends AbstractController
     {
         $user = $this->getUser();
         $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
-        return JsonResponse::fromJsonString($data);
+        return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }
 }
