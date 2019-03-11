@@ -5,20 +5,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 
-
 class JsonListPagination
 {
-	private $page;
-	private $limit;
-	private $offset;
-	private $repo;
+    private $page;
+    private $limit;
+    private $offset;
+    private $repo;
 
-    public function __construct(Request $request, $repo) 
+    public function __construct(Request $request, $repo)
     {
-		$this->setPage($request);
-		$this->setLimit($request);
-		$this->offset = ($this->page - 1) * $this->limit;
-		$this->repo = $repo;
+        $this->setPage($request);
+        $this->setLimit($request);
+        $this->offset = ($this->page - 1) * $this->limit;
+        $this->repo = $repo;
     }
 
     private function setPage(Request $request)
@@ -28,7 +27,7 @@ class JsonListPagination
             $page = $request->query->get('page');
         }
         $this->page = $page;
-	}
+    }
 
     private function setLimit(Request $request)
     {
@@ -37,10 +36,10 @@ class JsonListPagination
             $limit = $request->query->get('limit');
         }
         $this->limit = $limit;
-	}
+    }
 
-	public function getPaginatedItem($collection, $nbItems, $route)
-	{
+    public function getPaginatedItem($collection, $nbItems, $route)
+    {
         $paginatedCollection = new PaginatedRepresentation(
             $collection,
             $route, // route
@@ -54,22 +53,21 @@ class JsonListPagination
             $nbItems       // total collection size, optional, defaults to `null`
         );
         return $paginatedCollection;
-	}
+    }
 
-	public function getUserClientPaginated($user)
-	{
+    public function getUserClientPaginated($user)
+    {
         $clients = $this->repo->findBy(["user" => $user], null, $this->limit, $this->offset);
         $nbitems = $this->repo->count(["user" => $user]);
         $collection = new CollectionRepresentation($clients, 'Client_Collection');
         return $this->getPaginatedItem($collection, $nbitems, 'user_client_list');
-	}
+    }
 
-	public function getArticlePaginated()
-	{
+    public function getArticlePaginated()
+    {
         $articles = $this->repo->findBy([], null, $this->limit, $this->offset);
         $nbitems = $this->repo->count([]);
         $collection = new CollectionRepresentation($articles, 'Article_Collection');
         return $this->getPaginatedItem($collection, $nbitems, 'list_articles');
-
-	}
+    }
 }

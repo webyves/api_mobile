@@ -45,17 +45,10 @@ class ArticleController extends AbstractController
      */
     public function apiListArticles(ArticleRepository $repo, SerializerInterface $seri, Request $request)
     {
-        $user = $this->getUser();
-
+        $user = $this->getUser(); // Unsed but check if user connected correctly
         $jlp = new JsonListPagination($request, $repo);
         $PaginatedArticles = $jlp->getArticlePaginated();
-
-        $data = $seri->serialize(
-                    $PaginatedArticles, 
-                    'json', 
-                    SerializationContext::create()->setGroups(['Default', 'Article_Collection' => ['list']])
-                );
-
+        $data = $seri->serialize($PaginatedArticles, 'json', SerializationContext::create()->setGroups(['Default', 'Article_Collection' => ['list']]));
         return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }
 
@@ -82,7 +75,7 @@ class ArticleController extends AbstractController
      */
     public function apiShowArticle(Article $article, SerializerInterface $seri)
     {
-        $user = $this->getUser();
+        $user = $this->getUser(); // Unsed but check if user connected correctly
         $data = $seri->serialize($article, 'json', SerializationContext::create()->setGroups(array('detail'))->setSerializeNull('true'));
         return JsonResponse::fromJsonString($data, 200, [AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER=>true]);
     }

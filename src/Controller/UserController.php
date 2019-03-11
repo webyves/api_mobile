@@ -33,24 +33,23 @@ class UserController extends AbstractController
     public function fbCallback(EntityManagerInterface $manager, UserRepository $userRepo, FBService $fbs)
     {
 
-    	$fbInfos = $fbs->fbLogin();
+        $fbInfos = $fbs->fbLogin();
 
-		$user = $userRepo->findOneBy(['fbId' => $fbInfos['fbUser']->getId()]);
-		if (!$user) {
-			$user = new User();
-			$user->setFbId($fbInfos['fbUser']->getId());
-		}
-		$user->setFbName($fbInfos['fbUser']->getName())
-			 ->setFbToken($fbInfos['accessToken']->getValue());
-		$manager->persist($user);
-		$manager->flush();
+        $user = $userRepo->findOneBy(['fbId' => $fbInfos['fbUser']->getId()]);
+        if (!$user) {
+            $user = new User();
+            $user->setFbId($fbInfos['fbUser']->getId());
+        }
+        $user->setFbName($fbInfos['fbUser']->getName())
+             ->setFbToken($fbInfos['accessToken']->getValue());
+        $manager->persist($user);
+        $manager->flush();
 
 
         return $this->render('user/fbCallback.html.twig', [
             'fbToken' => $fbInfos['accessToken']->getValue(),
             'user' => $user
         ]);
-
     }
 
     /**
@@ -65,8 +64,8 @@ class UserController extends AbstractController
      */
     public function apiShowUser(SerializerInterface $seri)
     {
-    	$user = $this->getUser();
+        $user = $this->getUser();
         $data = $seri->serialize($user, 'json');
         return JsonResponse::fromJsonString($data);
-    }    
+    }
 }

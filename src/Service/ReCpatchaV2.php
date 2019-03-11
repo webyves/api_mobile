@@ -14,5 +14,4 @@ class ReCpatchaV2
         $decode = json_decode(file_get_contents($api_url), true);
         return $decode['success'];
     }
-
 }
